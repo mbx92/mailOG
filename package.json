@@ -1,0 +1,49 @@
+{
+  "name": "mailog",
+  "type": "module",
+  "private": true,
+  "scripts": {
+    "build": "nuxt build",
+    "dev": "nuxt dev",
+    "generate": "nuxt generate",
+    "preview": "nuxt preview",
+    "postinstall": "nuxt prepare",
+    "db:generate": "drizzle-kit generate",
+    "db:migrate": "drizzle-kit migrate",
+    "db:push": "drizzle-kit push",
+    "db:studio": "drizzle-kit studio",
+    "db:seed": "node --env-file=.env scripts/seed.js",
+    "db:migrate-legacy": "node --env-file=.env scripts/migrate-legacy.js",
+    "db:backfill-notif": "node --env-file=.env scripts/backfill-disposisi-notifications.js",
+    "docker:up": "docker compose up -d",
+    "docker:down": "docker compose down"
+  },
+  "dependencies": {
+    "@lucide/vue": "^1.27.0",
+    "@nuxt/fonts": "^0.14.0",
+    "@nuxtjs/tailwindcss": "^6.14.0",
+    "@pinia/nuxt": "^1.0.1",
+    "@tanstack/vue-table": "^8.21.3",
+    "@vee-validate/zod": "^4.15.1",
+    "bcryptjs": "^3.0.3",
+    "chart.js": "^4.5.1",
+    "clsx": "^2.1.1",
+    "date-fns": "^4.4.0",
+    "drizzle-orm": "^0.45.2",
+    "minio": "^8.0.7",
+    "nuxt": "^4.5.1",
+    "nuxt-auth-utils": "^0.5.29",
+    "pinia": "^4.0.2",
+    "postgres": "^3.4.9",
+    "tailwind-merge": "^3.6.0",
+    "vee-validate": "^4.15.1",
+    "vue": "^3.5.40",
+    "vue-chartjs": "^5.3.4",
+    "vue-router": "^5.2.0",
+    "vue-sonner": "^2.0.9",
+    "zod": "^3.25.76"
+  },
+  "devDependencies": {
+    "drizzle-kit": "^0.31.10"
+  }
+}

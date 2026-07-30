@@ -1,0 +1,95 @@
+/** @type {import('tailwindcss').Config} */
+export default {
+  content: [
+    './app/components/**/*.{vue,js}',
+    './app/layouts/**/*.vue',
+    './app/pages/**/*.vue',
+    './app/app.vue',
+    './app/plugins/**/*.js',
+  ],
+  theme: {
+    extend: {
+      colors: {
+        primary: {
+          DEFAULT: '#0a0a0a',
+          soft: '#181e25',
+          active: '#222222',
+        },
+        canvas: '#ffffff',
+        surface: {
+          DEFAULT: '#f7f8fa',
+          soft: '#f2f3f5',
+        },
+        ink: {
+          DEFAULT: '#0a0a0a',
+          strong: '#000000',
+        },
+        charcoal: '#222222',
+        slate: '#45515e',
+        steel: '#5f5f5f',
+        stone: '#8e8e93',
+        muted: '#a8aab2',
+        brand: {
+          coral: '#ff5530',
+          magenta: '#ea5ec1',
+          blue: '#1456f0',
+          'blue-mid': '#3b82f6',
+          'blue-deep': '#1d4ed8',
+          'blue-700': '#17437d',
+          cyan: '#3daeff',
+          'blue-200': '#bfdbfe',
+          purple: '#a855f7',
+        },
+        success: {
+          bg: '#e8ffea',
+          text: '#1ba673',
+        },
+        error: '#d45656',
+        warning: '#f59e0b',
+        hairline: {
+          DEFAULT: '#e5e7eb',
+          soft: '#eaecf0',
+        },
+      },
+      fontFamily: {
+        sans: ['DM Sans', 'Inter', 'Helvetica Neue', 'Arial', 'sans-serif'],
+      },
+      fontSize: {
+        'display-lg': ['3.5rem', { lineHeight: '1.10', letterSpacing: '-1.5px', fontWeight: '600' }],
+        'display-md': ['2.25rem', { lineHeight: '1.15', letterSpacing: '-0.5px', fontWeight: '600' }],
+        'display-sm': ['1.75rem', { lineHeight: '1.20', fontWeight: '600' }],
+        'heading-lg': ['2.5rem', { lineHeight: '1.20', letterSpacing: '-1px', fontWeight: '600' }],
+        'heading-md': ['2rem', { lineHeight: '1.25', letterSpacing: '-0.5px', fontWeight: '600' }],
+        'heading-sm': ['1.5rem', { lineHeight: '1.30', fontWeight: '600' }],
+        'title-lg': ['1.375rem', { lineHeight: '1.30', fontWeight: '600' }],
+        'title-md': ['1.125rem', { lineHeight: '1.40', fontWeight: '600' }],
+        'card-title': ['1.25rem', { lineHeight: '1.40', fontWeight: '600' }],
+        'body-md': ['1rem', { lineHeight: '1.50', fontWeight: '400' }],
+        'body-sm': ['0.875rem', { lineHeight: '1.50', fontWeight: '400' }],
+        caption: ['0.8125rem', { lineHeight: '1.70', fontWeight: '400' }],
+        'caption-bold': ['0.8125rem', { lineHeight: '1.50', fontWeight: '600' }],
+        micro: ['0.75rem', { lineHeight: '1.50', fontWeight: '400' }],
+        button: ['0.875rem', { lineHeight: '1.40', fontWeight: '600' }],
+      },
+      borderRadius: {
+        xs: '4px',
+        sm: '6px',
+        md: '8px',
+        lg: '12px',
+        xl: '16px',
+        '2xl': '20px',
+        '3xl': '24px',
+        hero: '32px',
+      },
+      boxShadow: {
+        subtle: 'rgba(0, 0, 0, 0.04) 0px 1px 2px 0px',
+        card: 'rgba(0, 0, 0, 0.08) 0px 4px 6px 0px',
+        modal: 'rgba(36, 36, 36, 0.08) 0px 12px 16px -4px',
+      },
+      maxWidth: {
+        content: '1280px',
+      },
+    },
+  },
+  plugins: [],
+}

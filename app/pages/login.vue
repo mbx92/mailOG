@@ -26,6 +26,9 @@ async function onSubmit() {
 <template>
   <div>
     <div class="mb-10 text-center">
+      <div class="flex justify-center mb-4">
+        <UiAppLogo :size="56" />
+      </div>
       <p class="text-display-sm text-ink tracking-tight">
         MailOG
       </p>

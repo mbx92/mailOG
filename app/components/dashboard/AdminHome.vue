@@ -1,4 +1,5 @@
 <script setup>
+import { FilePlus2, GitBranch, Inbox } from '@lucide/vue'
 import { formatDate, STATUS_SURAT_MASUK } from '~/utils/formatters'
 
 defineProps({
@@ -10,16 +11,19 @@ defineProps({
 
 <template>
   <div class="space-y-8">
-    <div>
-      <p class="text-caption-bold text-steel uppercase tracking-wide">
-        Administrasi
-      </p>
-      <h1 class="text-display-md text-ink tracking-tight mt-1">
-        Dashboard operasional
-      </h1>
-      <p class="text-body-sm text-steel mt-1">
-        Registrasi surat, disposisi ke unit, dan pantau tindak lanjut.
-      </p>
+    <div class="flex items-start gap-3.5">
+      <UiAppLogo :size="44" class="mt-0.5" />
+      <div>
+        <p class="text-caption-bold text-steel uppercase tracking-wide">
+          Administrasi
+        </p>
+        <h1 class="text-display-md text-ink tracking-tight mt-1">
+          Dashboard operasional
+        </h1>
+        <p class="text-body-sm text-steel mt-1">
+          Registrasi surat, disposisi ke unit, dan pantau tindak lanjut.
+        </p>
+      </div>
     </div>
 
     <div v-if="pending" class="text-body-sm text-steel">
@@ -57,30 +61,18 @@ defineProps({
       />
     </div>
 
-    <div class="grid lg:grid-cols-3 gap-4">
-      <NuxtLink to="/surat-masuk/baru" class="card-feature hover:bg-surface/80 transition-colors">
-        <p class="text-title-md text-ink">
-          Registrasi surat
-        </p>
-        <p class="text-body-sm text-steel mt-1">
-          Catat surat masuk baru ke sistem
-        </p>
+    <div class="flex flex-wrap gap-3">
+      <NuxtLink to="/surat-masuk/baru" class="btn-primary">
+        <FilePlus2 class="w-4 h-4" />
+        Registrasi surat
       </NuxtLink>
-      <NuxtLink to="/disposisi?status=diterima" class="card-feature hover:bg-surface/80 transition-colors">
-        <p class="text-title-md text-ink">
-          Monitor disposisi
-        </p>
-        <p class="text-body-sm text-steel mt-1">
-          Cek unit yang belum menindaklanjuti
-        </p>
+      <NuxtLink to="/disposisi?status=diterima" class="btn-secondary">
+        <GitBranch class="w-4 h-4" />
+        Monitor disposisi
       </NuxtLink>
-      <NuxtLink to="/surat-masuk" class="card-feature hover:bg-surface/80 transition-colors">
-        <p class="text-title-md text-ink">
-          Daftar surat masuk
-        </p>
-        <p class="text-body-sm text-steel mt-1">
-          Cari, filter, dan kelola arsip
-        </p>
+      <NuxtLink to="/surat-masuk" class="btn-tertiary">
+        <Inbox class="w-4 h-4" />
+        Daftar surat masuk
       </NuxtLink>
     </div>
 

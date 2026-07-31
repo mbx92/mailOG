@@ -74,8 +74,14 @@ const canSubmit = computed(() => canEdit.value)
 
 const rendered = computed(() => {
   if (!surat.value) return null
-  return renderSuratKeluarHtml(surat.value.template, surat.value, {
-    tanggalFormatted: formatDate(surat.value.tanggalSurat),
+  const tpl = editing.value
+    ? (templateData.value?.data || []).find((t) => t.id === form.templateId) || surat.value.template
+    : surat.value.template
+  const payload = editing.value
+    ? { ...surat.value, ...form }
+    : surat.value
+  return renderSuratKeluarHtml(tpl, payload, {
+    tanggalFormatted: formatDate(payload.tanggalSurat),
     pengirimNama: surat.value.creator?.nama || user.value?.nama || '',
     pengirimJabatan: surat.value.creator?.jabatan || user.value?.jabatan || '',
   })
@@ -334,11 +340,17 @@ async function kirim() {
         </div>
         <div>
           <label class="block text-caption-bold text-steel mb-1.5">Isi Surat</label>
-          <textarea v-model="form.isiSurat" rows="8" class="input-field h-auto py-2.5" />
+          <ClientOnly>
+            <UiRichEditor v-model="form.isiSurat" placeholder="Tulis isi surat..." />
+          </ClientOnly>
         </div>
         <div>
           <label class="block text-caption-bold text-steel mb-1.5">Catatan Internal</label>
           <textarea v-model="form.catatanInternal" rows="2" class="input-field h-auto py-2.5" />
+        </div>
+        <div>
+          <label class="block text-caption-bold text-steel mb-1.5">Pratinjau</label>
+          <UiLetterPreview :rendered="rendered" />
         </div>
         <div class="flex flex-wrap gap-2 justify-end">
           <UiButton variant="tertiary" :disabled="busy" @click="editing = false">
@@ -408,14 +420,6 @@ async function kirim() {
               {{ surat.klasifikasi?.nama || '—' }}
             </dd>
           </div>
-          <div class="border-b border-hairline-soft pb-3 sm:col-span-2">
-            <dt class="text-caption text-muted">
-              Isi Surat
-            </dt>
-            <dd class="text-body-sm text-ink mt-0.5 whitespace-pre-wrap">
-              {{ surat.isiSurat || '—' }}
-            </dd>
-          </div>
           <div v-if="surat.catatanInternal" class="border-b border-hairline-soft pb-3 sm:col-span-2">
             <dt class="text-caption text-muted">
               Catatan Internal
@@ -427,14 +431,11 @@ async function kirim() {
         </dl>
       </section>
 
-      <section v-if="surat.template || surat.isiSurat" class="card-base space-y-3">
+      <section class="card-base space-y-3">
         <h2 class="text-title-md text-ink">
-          Pratinjau Template
+          Pratinjau Surat
         </h2>
-        <div
-          class="rounded-lg border border-hairline bg-white p-6 text-body-sm text-ink whitespace-pre-wrap"
-          v-text="rendered?.html"
-        />
+        <UiLetterPreview :rendered="rendered" />
       </section>
 
       <section class="card-base space-y-4">

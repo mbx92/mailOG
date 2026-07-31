@@ -4,6 +4,7 @@ import { X } from '@lucide/vue'
 defineProps({
   open: { type: Boolean, default: false },
   title: { type: String, required: true },
+  wide: { type: Boolean, default: false },
 })
 
 defineEmits(['close'])
@@ -13,7 +14,10 @@ defineEmits(['close'])
   <Teleport to="body">
     <div v-if="open" class="fixed inset-0 z-50 flex justify-end">
       <div class="absolute inset-0 bg-ink/20" @click="$emit('close')" />
-      <aside class="relative w-full max-w-md bg-canvas h-full shadow-modal flex flex-col">
+      <aside
+        class="relative w-full bg-canvas h-full shadow-modal flex flex-col"
+        :class="wide ? 'max-w-3xl' : 'max-w-md'"
+      >
         <header class="flex items-center justify-between px-6 py-4 border-b border-hairline-soft">
           <h2 class="text-title-md text-ink">
             {{ title }}

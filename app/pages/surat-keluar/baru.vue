@@ -1,7 +1,8 @@
 <script setup>
 import { Upload, X, FileText } from '@lucide/vue'
 import { toast } from 'vue-sonner'
-import { formatBytes } from '~/utils/formatters'
+import { formatBytes, formatDate } from '~/utils/formatters'
+import { renderSuratKeluarHtml } from '~/utils/template-render'
 
 const { can, user } = useRBAC()
 if (!can('buat_surat')) {
@@ -42,6 +43,21 @@ const form = reactive({
 watch(defaultTemplate, (t) => {
   if (t && !form.templateId) form.templateId = t.id
 }, { immediate: true })
+
+const selectedTemplate = computed(() =>
+  (templateData.value?.data || []).find((t) => t.id === form.templateId) || null,
+)
+
+const livePreview = computed(() =>
+  renderSuratKeluarHtml(selectedTemplate.value, {
+    ...form,
+    nomorSurat: '(auto saat diajukan)',
+  }, {
+    tanggalFormatted: formatDate(form.tanggalSurat),
+    pengirimNama: user.value?.nama || '',
+    pengirimJabatan: user.value?.jabatan || '',
+  }),
+)
 
 const files = ref([])
 const fileInput = ref(null)
@@ -232,12 +248,14 @@ async function save(action) {
 
       <div>
         <label class="block text-caption-bold text-steel mb-1.5">Isi Surat</label>
-        <textarea
-          v-model="form.isiSurat"
-          rows="8"
-          class="input-field h-auto py-2.5"
-          placeholder="Isi tubuh surat..."
-        />
+        <ClientOnly>
+          <UiRichEditor v-model="form.isiSurat" placeholder="Tulis isi surat..." />
+        </ClientOnly>
+      </div>
+
+      <div>
+        <label class="block text-caption-bold text-steel mb-1.5">Pratinjau surat</label>
+        <UiLetterPreview :rendered="livePreview" />
       </div>
 
       <div>

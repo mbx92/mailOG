@@ -1,16 +1,18 @@
 import { z } from 'zod'
 import { and, eq, isNull } from 'drizzle-orm'
-import { useDb } from '../../db/index.js'
-import { templateSurat } from '../../db/schema/index.js'
-import { can, requireAuthUser } from '../../utils/rbac.js'
-import { writeAuditLog } from '../../utils/audit.js'
+import { useDb } from '../../../db/index.js'
+import { templateSurat } from '../../../db/schema/index.js'
+import { can, requireAuthUser } from '../../../utils/rbac.js'
+import { writeAuditLog } from '../../../utils/audit.js'
 
 const schema = z.object({
   nama: z.string().min(1).max(255).optional(),
   kode: z.string().min(1).max(50).optional(),
   kopSurat: z.string().optional().nullable(),
+  kopImage: z.string().max(255).optional().nullable(),
   bodyTemplate: z.string().optional().nullable(),
   footer: z.string().optional().nullable(),
+  footerImage: z.string().max(255).optional().nullable(),
   kertas: z.enum(['a4', 'folio', 'legal']).optional(),
   margin: z
     .object({

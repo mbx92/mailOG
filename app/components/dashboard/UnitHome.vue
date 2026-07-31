@@ -12,20 +12,25 @@ defineProps({
 <template>
   <div class="space-y-8">
     <div class="rounded-2xl border border-hairline bg-gradient-to-br from-surface via-canvas to-canvas p-6 sm:p-8">
-      <p class="text-caption-bold text-steel uppercase tracking-wide">
-        Workspace unit
-      </p>
-      <h1 class="text-display-md text-ink tracking-tight mt-1">
-        Inbox unit Anda
-      </h1>
-      <p class="text-body-sm text-steel mt-2 max-w-xl">
-        Surat yang didisposisikan sekretariat ke unit Anda muncul di sini. Buka, baca instruksi, lalu tindak lanjuti.
-      </p>
-      <div class="flex flex-wrap gap-3 mt-5">
-        <NuxtLink to="/surat-masuk" class="btn-primary">
-          Buka inbox
-          <ArrowRight class="w-4 h-4" />
-        </NuxtLink>
+      <div class="flex items-start gap-3.5">
+        <UiAppLogo :size="44" class="mt-0.5" />
+        <div>
+          <p class="text-caption-bold text-steel uppercase tracking-wide">
+            Workspace unit
+          </p>
+          <h1 class="text-display-md text-ink tracking-tight mt-1">
+            Inbox unit Anda
+          </h1>
+          <p class="text-body-sm text-steel mt-2 max-w-xl">
+            Surat yang didisposisikan sekretariat ke unit Anda muncul di sini. Buka, baca instruksi, lalu tindak lanjuti.
+          </p>
+          <div class="flex flex-wrap gap-3 mt-5">
+            <NuxtLink to="/surat-masuk" class="btn-primary">
+              Buka inbox
+              <ArrowRight class="w-4 h-4" />
+            </NuxtLink>
+          </div>
+        </div>
       </div>
     </div>
 

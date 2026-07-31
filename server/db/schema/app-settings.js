@@ -19,4 +19,7 @@ export const DEFAULT_SETTINGS = {
   minio_access_key: '',
   minio_secret_key: '',
   minio_bucket: 'mailog',
+  /** Format nomor surat keluar. Token: {SEQ} {UNIT} {MM} {YYYY} {YY} */
+  nomor_format: '{SEQ} / {UNIT} / {MM} / {YYYY}',
+  nomor_seq_pad: '3',
 }

@@ -11,6 +11,7 @@ import {
   BarChart3,
   Settings,
   GitBranch,
+  Hash,
   X,
 } from '@lucide/vue'
 
@@ -61,6 +62,9 @@ const masterNav = computed(() => {
   if (can('manage_instansi') || can('registrasi_surat')) {
     items.push({ to: '/master/klasifikasi', label: 'Klasifikasi', icon: Tags })
   }
+  if (can('buat_surat') || can('pengaturan')) {
+    items.push({ to: '/master/nomor-surat', label: 'No. Surat', icon: Hash })
+  }
   if (can('manage_user')) items.push({ to: '/master/users', label: 'Users', icon: Users })
   return items
 })
@@ -95,8 +99,9 @@ function isActive(to) {
     :class="open ? 'translate-x-0' : '-translate-x-full lg:translate-x-0'"
   >
     <div class="flex items-center justify-between px-5 h-14 border-b border-hairline-soft">
-      <NuxtLink to="/" class="font-semibold text-ink tracking-tight text-lg" @click="open = false">
-        {{ brandName }}
+      <NuxtLink to="/" class="flex items-center gap-2.5 font-semibold text-ink tracking-tight text-lg min-w-0" @click="open = false">
+        <UiAppLogo :size="28" />
+        <span class="truncate">{{ brandName }}</span>
       </NuxtLink>
       <button type="button" class="btn-icon lg:hidden" @click="open = false">
         <X class="w-4 h-4" />

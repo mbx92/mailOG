@@ -56,6 +56,11 @@ export default defineNuxtConfig({
       meta: [
         { name: 'description', content: 'Sistem Surat Menyurat — paperless, audit-trail lengkap' },
       ],
+      link: [
+        { rel: 'icon', href: '/favicon.ico', sizes: 'any' },
+        { rel: 'icon', type: 'image/svg+xml', href: '/favicon.svg' },
+        { rel: 'apple-touch-icon', href: '/logo.svg' },
+      ],
     },
   },
 

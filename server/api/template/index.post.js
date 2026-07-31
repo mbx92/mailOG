@@ -9,8 +9,10 @@ const schema = z.object({
   nama: z.string().min(1).max(255),
   kode: z.string().min(1).max(50),
   kopSurat: z.string().optional().nullable(),
+  kopImage: z.string().max(255).optional().nullable(),
   bodyTemplate: z.string().optional().nullable(),
   footer: z.string().optional().nullable(),
+  footerImage: z.string().max(255).optional().nullable(),
   kertas: z.enum(['a4', 'folio', 'legal']).default('a4'),
   margin: z
     .object({
@@ -44,8 +46,10 @@ export default defineEventHandler(async (event) => {
       nama: body.nama,
       kode: body.kode.trim().toUpperCase(),
       kopSurat: body.kopSurat ?? null,
+      kopImage: body.kopImage ?? null,
       bodyTemplate: body.bodyTemplate ?? null,
       footer: body.footer ?? null,
+      footerImage: body.footerImage ?? null,
       kertas: body.kertas,
       margin: body.margin ?? { top: 20, right: 20, bottom: 20, left: 25 },
       unitId: body.unitId ?? null,

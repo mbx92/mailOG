@@ -3,7 +3,7 @@ definePageMeta({ layout: 'auth' })
 
 const route = useRoute()
 const { login } = useAuth()
-const { enabled: ssoEnabled, loginWithSso } = useSso()
+const { enabled: ssoEnabled, loginPath: ssoLoginPath } = useSso()
 const email = ref('admin@mailog.local')
 const password = ref('admin12345')
 const error = ref(route.query.error ? String(route.query.error) : '')
@@ -67,9 +67,9 @@ async function onSubmit() {
           </div>
         </div>
 
-        <UiButton type="button" variant="secondary" block @click="loginWithSso">
+        <a :href="ssoLoginPath" class="btn-secondary inline-flex w-full items-center justify-center">
           Masuk dengan SSO
-        </UiButton>
+        </a>
       </template>
     </form>
 

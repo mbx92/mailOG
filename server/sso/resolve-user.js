@@ -6,8 +6,8 @@ import { users } from '../db/schema/index.js'
 import { writeAuditLog } from '../utils/audit.js'
 
 /**
- * Set session cookie sama seperti nuxt-auth-utils (tanpa #imports —
- * file ini bisa di-load di luar transform Nitro oleh SSO callback).
+ * Match nuxt-auth-utils cookie (name: nuxt-session).
+ * Avoid #imports — this file may load outside Nitro's transform pipeline.
  */
 async function setMailogSession(event, data) {
   const password =
@@ -20,13 +20,18 @@ async function setMailogSession(event, data) {
       statusMessage: 'NUXT_SESSION_PASSWORD belum dikonfigurasi (min 32 karakter)',
     })
   }
+
   const session = await useSession(event, {
+    name: 'nuxt-session',
     password,
     cookie: {
       sameSite: 'lax',
       secure: process.env.NODE_ENV === 'production',
+      httpOnly: true,
+      path: '/',
     },
   })
+
   await session.update({
     ...session.data,
     ...data,
@@ -35,6 +40,7 @@ async function setMailogSession(event, data) {
       ...(data.user || {}),
     },
   })
+
   return session.data
 }
 

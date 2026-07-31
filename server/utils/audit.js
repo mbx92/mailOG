@@ -1,3 +1,4 @@
+import { getRequestHeaders, getRequestIP } from 'h3'
 import { useDb } from '../db/index.js'
 import { trackingLog } from '../db/schema/index.js'
 

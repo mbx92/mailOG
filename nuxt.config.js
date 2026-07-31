@@ -8,7 +8,14 @@ export default defineNuxtConfig({
     '@nuxt/fonts',
     '@pinia/nuxt',
     'nuxt-auth-utils',
+    '@mbx92/nuxt-sso-client',
   ],
+
+  ssoClient: {
+    resolveUser: 'server/sso/resolve-user.js',
+    successRedirect: '/',
+    loginPath: '/login',
+  },
 
   tailwindcss: {
     cssPath: '~/assets/css/main.css',

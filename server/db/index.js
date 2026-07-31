@@ -1,14 +1,28 @@
 import { drizzle } from 'drizzle-orm/postgres-js'
 import postgres from 'postgres'
+import { createError } from 'h3'
 import * as schema from './schema/index.js'
 
 let _db = null
 
+function resolveDatabaseUrl() {
+  if (process.env.DATABASE_URL) return process.env.DATABASE_URL
+  try {
+    // Tersedia jika file di-bundle Nitro dengan auto-import
+    if (typeof useRuntimeConfig === 'function') {
+      return useRuntimeConfig().databaseUrl || ''
+    }
+  }
+  catch {
+    // ignore
+  }
+  return ''
+}
+
 export function useDb() {
   if (_db) return _db
 
-  const config = useRuntimeConfig()
-  const url = config.databaseUrl || process.env.DATABASE_URL
+  const url = resolveDatabaseUrl()
 
   if (!url) {
     throw createError({

@@ -1,10 +1,12 @@
-<script setup >
+<script setup>
 definePageMeta({ layout: 'auth' })
 
+const route = useRoute()
 const { login } = useAuth()
+const { enabled: ssoEnabled, loginWithSso } = useSso()
 const email = ref('admin@mailog.local')
 const password = ref('admin12345')
-const error = ref('')
+const error = ref(route.query.error ? String(route.query.error) : '')
 const loading = ref(false)
 
 async function onSubmit() {
@@ -54,10 +56,28 @@ async function onSubmit() {
       <UiButton type="submit" block :disabled="loading">
         {{ loading ? 'Masuk...' : 'Masuk' }}
       </UiButton>
+
+      <template v-if="ssoEnabled">
+        <div class="relative py-1">
+          <div class="absolute inset-0 flex items-center">
+            <div class="w-full border-t border-hairline" />
+          </div>
+          <div class="relative flex justify-center">
+            <span class="bg-canvas px-3 text-caption text-muted">atau</span>
+          </div>
+        </div>
+
+        <UiButton type="button" variant="secondary" block @click="loginWithSso">
+          Masuk dengan SSO
+        </UiButton>
+      </template>
     </form>
 
     <p class="text-center text-caption text-muted mt-6">
-      Demo: admin@mailog.local / admin12345
+      Demo lokal: admin@mailog.local / admin12345
+      <template v-if="ssoEnabled">
+        <br>SSO trial: admin@example.com / password123!
+      </template>
     </p>
   </div>
 </template>

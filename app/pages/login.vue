@@ -54,7 +54,7 @@ async function onSubmit() {
 
     <form class="card-base space-y-5" @submit.prevent="onSubmit">
       <div v-if="sessionExpired" class="rounded-lg border border-amber-300 bg-amber-50 px-4 py-3 text-body-sm text-amber-700">
-        <span class="font-semibold">Sesi habis.</span> Sesi SSO Anda telah dicabut oleh administrator. Silakan masuk kembali.
+        <span class="font-semibold">Sesi habis.</span> Silakan masuk kembali.
       </div>
 
       <div>

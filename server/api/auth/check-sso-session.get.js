@@ -22,9 +22,12 @@ export default defineEventHandler(async (event) => {
       password,
     })
 
-    const userId = session.data?.user?.id
+    // Must be the SSO issuer's own account id (session.data.ssoSub), not
+    // mailOG's local user.id — those are different UUIDs from different
+    // databases and will never match sso-login's oidc_kv AccessToken rows.
+    const userId = session.data?.ssoSub
     if (!userId) {
-      return { valid: true } // not logged in, no check needed
+      return { valid: true } // not an SSO session (or pre-fix session), no check needed
     }
 
     const issuer = process.env.SSO_ISSUER || 'http://localhost:3010'

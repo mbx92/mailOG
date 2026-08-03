@@ -2,8 +2,51 @@ import { eq, and, isNull } from 'drizzle-orm'
 import { hash } from 'bcryptjs'
 import { createError, useSession } from 'h3'
 import { useDb } from '../db/index.js'
-import { users, unit, USER_PROVIDERS } from '../db/schema/index.js'
+import { users, unit, instansi, USER_PROVIDERS } from '../db/schema/index.js'
 import { writeAuditLog } from '../utils/audit.js'
+
+function deriveUnitCode(userInfo) {
+  const raw = userInfo.unit_code || userInfo.unit_name || 'UNIT'
+  const slug = String(raw).trim().toUpperCase().replace(/[^A-Z0-9]+/g, '_').replace(/^_+|_+$/g, '')
+  return (slug || 'UNIT').slice(0, 20)
+}
+
+/**
+ * SSO's org structure (units) doesn't exist in mailOG's own `unit` table —
+ * they're separate databases with independently-managed org charts. Rather
+ * than silently dropping the unit info (leaving users.unitId null forever),
+ * mirror it into mailOG's unit table on first sight, same idea as
+ * auto-provisioning the user itself.
+ */
+async function autoCreateUnitFromSso(db, userInfo) {
+  const nama = String(userInfo.unit_name || userInfo.unit_code || '').trim()
+  if (!nama) return null
+
+  const [instansiRow] = await db
+    .select({ id: instansi.id })
+    .from(instansi)
+    .where(eq(instansi.status, 'aktif'))
+    .limit(1)
+  if (!instansiRow) return null
+
+  const kode = deriveUnitCode(userInfo)
+
+  const [created] = await db
+    .insert(unit)
+    .values({ instansiId: instansiRow.id, kode, nama })
+    .onConflictDoNothing({ target: [unit.instansiId, unit.kode] })
+    .returning({ id: unit.id, nama: unit.nama })
+  if (created) return created
+
+  // Lost a race with a concurrent login, or `kode` collided with an
+  // unrelated existing unit — either way, look up what's there now.
+  const [existing] = await db
+    .select({ id: unit.id, nama: unit.nama })
+    .from(unit)
+    .where(and(eq(unit.instansiId, instansiRow.id), eq(unit.kode, kode)))
+    .limit(1)
+  return existing || null
+}
 
 /**
  * Match nuxt-auth-utils cookie (name: nuxt-session).
@@ -76,6 +119,9 @@ export default async function resolveSsoUser(event, { userInfo, tokens, sso }) {
           .where(eq(unit.kode, String(userInfo.unit_code).trim()))
           .limit(1)
       }
+      if (!matchedUnit) {
+        matchedUnit = await autoCreateUnitFromSso(db, userInfo)
+      }
       if (matchedUnit) {
         localUnitId = matchedUnit.id
         localUnitName = matchedUnit.nama
@@ -141,8 +187,15 @@ export default async function resolveSsoUser(event, { userInfo, tokens, sso }) {
       provider: USER_PROVIDERS.SSO,
     }
 
+    // userInfo.sub is the SSO issuer's own internal user id (the OIDC
+    // account id) — a different UUID from mailOG's local user.id, since
+    // they come from separate databases. check-sso-session.get.js needs
+    // this one, not user.id, to ask the issuer "is this account's session
+    // still valid" (see server/services/oidc.js createAccessToken on the
+    // sso-login side, which stores AccessToken rows keyed by this id).
     await setMailogSession(event, {
       user: sessionUser,
+      ssoSub: userInfo.sub,
     })
 
     await writeAuditLog({

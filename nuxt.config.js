@@ -54,6 +54,7 @@ export default defineNuxtConfig({
     },
     public: {
       appUrl: process.env.APP_URL || 'http://localhost:3000',
+      ssoIssuer: process.env.SSO_ISSUER || 'http://localhost:3010',
     },
   },
 

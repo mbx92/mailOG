@@ -19,6 +19,8 @@ export const users = pgTable('users', {
   jabatan: varchar('jabatan', { length: 100 }),
   noTelp: varchar('no_telp', { length: 20 }),
   avatar: varchar('avatar', { length: 255 }),
+  /** Asal akun: local (admin/seed) | sso (Identity Provider) */
+  provider: varchar('provider', { length: 32 }).notNull().default('local'),
   isActive: boolean('is_active').notNull().default(true),
   lastLogin: timestamp('last_login', { withTimezone: true }),
   createdAt: timestamp('created_at', { withTimezone: true }).defaultNow().notNull(),
@@ -48,4 +50,14 @@ export const USER_LEVEL_LABELS = {
   3: 'Admin / Sekretaris',
   4: 'Staff Unit',
   5: 'Viewer',
+}
+
+export const USER_PROVIDERS = {
+  LOCAL: 'local',
+  SSO: 'sso',
+}
+
+export const USER_PROVIDER_LABELS = {
+  local: 'Local',
+  sso: 'SSO',
 }

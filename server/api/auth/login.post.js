@@ -11,42 +11,54 @@ export default defineEventHandler(async (event) => {
     throw createError({ statusCode: 400, statusMessage: 'Email dan password wajib diisi' })
   }
 
-  const db = useDb()
-  const user = await db.query.users.findFirst({
-    where: and(eq(users.email, body.email.toLowerCase().trim()), isNull(users.deletedAt)),
-  })
+  try {
+    const db = useDb()
+    const user = await db.query.users.findFirst({
+      where: and(eq(users.email, body.email.toLowerCase().trim()), isNull(users.deletedAt)),
+    })
 
-  if (!user || !user.isActive) {
-    throw createError({ statusCode: 401, statusMessage: 'Email atau password salah' })
+    if (!user || !user.isActive) {
+      throw createError({ statusCode: 401, statusMessage: 'Email atau password salah' })
+    }
+
+    const valid = await compare(body.password, user.password)
+    if (!valid) {
+      throw createError({ statusCode: 401, statusMessage: 'Email atau password salah' })
+    }
+
+    await db
+      .update(users)
+      .set({ lastLogin: new Date(), updatedAt: new Date() })
+      .where(eq(users.id, user.id))
+
+    const sessionUser = {
+      id: user.id,
+      email: user.email,
+      nama: user.nama,
+      level: user.level,
+      unitId: user.unitId,
+      jabatan: user.jabatan,
+    }
+
+    await setUserSession(event, { user: sessionUser })
+
+    await writeAuditLog({
+      user: sessionUser,
+      aksi: 'login',
+      detail: { email: user.email },
+      event,
+    })
+
+    return { user: sessionUser }
   }
-
-  const valid = await compare(body.password, user.password)
-  if (!valid) {
-    throw createError({ statusCode: 401, statusMessage: 'Email atau password salah' })
+  catch (error) {
+    if (error?.statusCode && error?.statusMessage && error.statusCode < 500) {
+      throw error
+    }
+    const { throwHumanError } = await import('../../utils/humanize-error.js')
+    throwHumanError(error, {
+      statusCode: 500,
+      fallback: 'Login gagal. Silakan coba lagi.',
+    })
   }
-
-  await db
-    .update(users)
-    .set({ lastLogin: new Date(), updatedAt: new Date() })
-    .where(eq(users.id, user.id))
-
-  const sessionUser = {
-    id: user.id,
-    email: user.email,
-    nama: user.nama,
-    level: user.level,
-    unitId: user.unitId,
-    jabatan: user.jabatan,
-  }
-
-  await setUserSession(event, { user: sessionUser })
-
-  await writeAuditLog({
-    user: sessionUser,
-    aksi: 'login',
-    detail: { email: user.email },
-    event,
-  })
-
-  return { user: sessionUser }
 })

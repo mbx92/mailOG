@@ -90,13 +90,16 @@ async function createUser() {
               Unit
             </th>
             <th class="px-4 py-3 text-caption-bold text-steel">
+              Provider
+            </th>
+            <th class="px-4 py-3 text-caption-bold text-steel">
               Status
             </th>
           </tr>
         </thead>
         <tbody>
           <tr v-if="pending">
-            <td colspan="5" class="px-4 py-8 text-center text-body-sm text-steel">
+            <td colspan="6" class="px-4 py-8 text-center text-body-sm text-steel">
               Memuat...
             </td>
           </tr>
@@ -116,6 +119,11 @@ async function createUser() {
             </td>
             <td class="px-4 py-3 text-body-sm text-steel">
               {{ row.unit?.nama || '—' }}
+            </td>
+            <td class="px-4 py-3">
+              <span :class="row.provider === 'sso' ? 'badge-beta' : 'badge-muted'">
+                {{ row.providerLabel || row.provider }}
+              </span>
             </td>
             <td class="px-4 py-3">
               <span :class="row.isActive ? 'badge-success' : 'badge-muted'">

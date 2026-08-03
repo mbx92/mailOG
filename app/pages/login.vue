@@ -6,8 +6,21 @@ const { login } = useAuth()
 const { enabled: ssoEnabled, loginPath: ssoLoginPath } = useSso()
 const email = ref('admin@mailog.local')
 const password = ref('admin12345')
-const error = ref(route.query.error ? String(route.query.error) : '')
+const error = ref(humanizeLoginError(route.query.error))
 const loading = ref(false)
+const sessionExpired = computed(() => route.query.reason === 'session_expired')
+
+function humanizeLoginError(raw) {
+  const text = raw ? String(raw) : ''
+  if (!text) return ''
+  if (
+    /failed\s+query|select\s+|insert\s+|update\s+|delete\s+|relation\s+"|params:\s*|ECONNREFUSED|syntax\s+error/i.test(text)
+    || text.length > 160
+  ) {
+    return 'Login gagal. Silakan coba lagi atau hubungi administrator.'
+  }
+  return text
+}
 
 async function onSubmit() {
   error.value = ''
@@ -17,7 +30,7 @@ async function onSubmit() {
     await navigateTo('/')
   }
   catch (e) {
-    error.value = e?.data?.statusMessage || e?.statusMessage || 'Login gagal'
+    error.value = humanizeLoginError(e?.data?.statusMessage || e?.statusMessage || 'Login gagal')
   }
   finally {
     loading.value = false
@@ -40,6 +53,10 @@ async function onSubmit() {
     </div>
 
     <form class="card-base space-y-5" @submit.prevent="onSubmit">
+      <div v-if="sessionExpired" class="rounded-lg border border-amber-300 bg-amber-50 px-4 py-3 text-body-sm text-amber-700">
+        <span class="font-semibold">Sesi habis.</span> Sesi SSO Anda telah dicabut oleh administrator. Silakan masuk kembali.
+      </div>
+
       <div>
         <label class="block text-caption-bold text-steel mb-1.5">Email</label>
         <input v-model="email" type="email" required class="input-field" placeholder="nama@instansi.go.id">

@@ -1,6 +1,6 @@
 import { and, desc, eq, ilike, isNull } from 'drizzle-orm'
 import { useDb } from '../../db/index.js'
-import { users, USER_LEVEL_LABELS } from '../../db/schema/index.js'
+import { users, USER_LEVEL_LABELS, USER_PROVIDER_LABELS } from '../../db/schema/index.js'
 import { requireAuthUser, requirePermission } from '../../utils/rbac.js'
 
 export default defineEventHandler(async (event) => {
@@ -33,6 +33,8 @@ export default defineEventHandler(async (event) => {
       levelLabel: USER_LEVEL_LABELS[u.level],
       jabatan: u.jabatan,
       noTelp: u.noTelp,
+      provider: u.provider,
+      providerLabel: USER_PROVIDER_LABELS[u.provider] || u.provider,
       isActive: u.isActive,
       unitId: u.unitId,
       unit: u.unit ? { id: u.unit.id, nama: u.unit.nama, kode: u.unit.kode } : null,

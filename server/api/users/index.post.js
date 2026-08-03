@@ -1,7 +1,7 @@
 import { hash } from 'bcryptjs'
 import { z } from 'zod'
 import { useDb } from '../../db/index.js'
-import { users } from '../../db/schema/index.js'
+import { users, USER_PROVIDERS } from '../../db/schema/index.js'
 import { requireAuthUser, requirePermission } from '../../utils/rbac.js'
 import { writeAuditLog } from '../../utils/audit.js'
 
@@ -34,6 +34,7 @@ export default defineEventHandler(async (event) => {
       unitId: body.unitId ?? null,
       jabatan: body.jabatan ?? null,
       noTelp: body.noTelp ?? null,
+      provider: USER_PROVIDERS.LOCAL,
       isActive: body.isActive,
     })
     .returning()

@@ -115,9 +115,9 @@
     "semantic_hash": "fc739c047f26f392cb693a8d7578801f"
   },
   "app/middleware/auth.global.js": {
-    "mtime": 1785758401.7191064,
-    "ast_hash": "00914c928b13f0118670d927303dd485",
-    "semantic_hash": "00914c928b13f0118670d927303dd485"
+    "mtime": 1785807339.138919,
+    "ast_hash": "4b0483b3277decee29a4e6d77bf4f9c4",
+    "semantic_hash": "4b0483b3277decee29a4e6d77bf4f9c4"
   },
   "app/pages/disposisi/index.vue": {
     "mtime": 1785724477.7615018,
@@ -135,9 +135,9 @@
     "semantic_hash": "55c85a58a9c9e5f773fecc7f9d70445c"
   },
   "app/pages/login.vue": {
-    "mtime": 1785758401.7194967,
-    "ast_hash": "46552db20e715c0183d9f0b73ae7c365",
-    "semantic_hash": "46552db20e715c0183d9f0b73ae7c365"
+    "mtime": 1785764992.0846946,
+    "ast_hash": "6847aae2a4d31af34b582e3aca9ba1d4",
+    "semantic_hash": "6847aae2a4d31af34b582e3aca9ba1d4"
   },
   "app/pages/master/instansi.vue": {
     "mtime": 1785724477.7630768,
@@ -258,11 +258,6 @@
     "mtime": 1785724477.790529,
     "ast_hash": "41bd6a43f6827b06f0e176422d5f0945",
     "semantic_hash": "41bd6a43f6827b06f0e176422d5f0945"
-  },
-  "server/api/auth/check-sso-session.get.js": {
-    "mtime": 1785758401.7247243,
-    "ast_hash": "bbf0c41a4de85dfeca31c72d60a91c0d",
-    "semantic_hash": "bbf0c41a4de85dfeca31c72d60a91c0d"
   },
   "server/api/auth/login.post.js": {
     "mtime": 1785758401.7252429,
@@ -680,9 +675,9 @@
     "semantic_hash": "41de2928ac306db6486e043258609837"
   },
   "server/sso/resolve-user.js": {
-    "mtime": 1785758401.729034,
-    "ast_hash": "734806579653d9e751b170356ebd37c4",
-    "semantic_hash": "734806579653d9e751b170356ebd37c4"
+    "mtime": 1785807344.7054448,
+    "ast_hash": "d6b5d5ac2af513cd29744b8ec2760a31",
+    "semantic_hash": "d6b5d5ac2af513cd29744b8ec2760a31"
   },
   "server/utils/audit.js": {
     "mtime": 1785724477.8189957,

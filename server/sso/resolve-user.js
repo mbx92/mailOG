@@ -187,15 +187,11 @@ export default async function resolveSsoUser(event, { userInfo, tokens, sso }) {
       provider: USER_PROVIDERS.SSO,
     }
 
-    // userInfo.sub is the SSO issuer's own internal user id (the OIDC
-    // account id) — a different UUID from mailOG's local user.id, since
-    // they come from separate databases. check-sso-session.get.js needs
-    // this one, not user.id, to ask the issuer "is this account's session
-    // still valid" (see server/services/oidc.js createAccessToken on the
-    // sso-login side, which stores AccessToken rows keyed by this id).
+    // Session-revocation checks (is this SSO account still valid on the
+    // issuer?) are handled by @mbx92/nuxt-sso-client itself via its own
+    // session cookie — mailOG's session only needs the local user record.
     await setMailogSession(event, {
       user: sessionUser,
-      ssoSub: userInfo.sub,
     })
 
     await writeAuditLog({

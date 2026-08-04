@@ -1,11 +1,11 @@
-# Graph Report - .  (2026-08-03)
+# Graph Report - /Users/mbx/Projects/mailOG  (2026-08-04)
 
 ## Corpus Check
-- 156 files · ~220,909 words
+- 3 files · ~220,960 words
 - Verdict: corpus is large enough that graph structure adds value.
 
 ## Summary
-- 743 nodes · 1361 edges · 92 communities (58 shown, 34 thin omitted)
+- 743 nodes · 1353 edges · 92 communities (58 shown, 34 thin omitted)
 - Extraction: 98% EXTRACTED · 2% INFERRED · 0% AMBIGUOUS · INFERRED: 23 edges (avg confidence: 0.85)
 - Token cost: 0 input · 0 output
 
@@ -56,7 +56,7 @@
 - App Header Auth
 - Badge Component
 - Stat Card Component
-- Default Layout Shell
+- Auth Composable
 - clsx Utility Dep
 - date-fns Dependency
 - drizzle-orm Dependency
@@ -84,15 +84,16 @@
 - Vue Router
 - vue-sonner Toasts
 - Zod Validation
+- Disposisi Notif Backfill
 
 ## God Nodes (most connected - your core abstractions)
-1. `useDb()` - 70 edges
+1. `useDb()` - 68 edges
 2. `requireAuthUser()` - 60 edges
-3. `writeAuditLog()` - 43 edges
+3. `writeAuditLog()` - 41 edges
 4. `can()` - 28 edges
 5. `requirePermission()` - 28 edges
-6. `unit` - 18 edges
-7. `users` - 17 edges
+6. `unit` - 17 edges
+7. `users` - 16 edges
 8. `scripts` - 15 edges
 9. `main()` - 15 edges
 10. `suratKeluar` - 14 edges
@@ -123,8 +124,8 @@
 ## Communities (92 total, 34 thin omitted)
 
 ### Community 0 - "API Auth & CRUD Routes"
-Cohesion: 0.08
-Nodes (52): schema, schema, schema, schema, schema, schema, schema, ALLOWED (+44 more)
+Cohesion: 0.09
+Nodes (45): schema, schema, schema, schema, schema, schema, schema, ALLOWED (+37 more)
 
 ### Community 1 - "Design System & Infra Docs"
 Cohesion: 0.05
@@ -139,32 +140,32 @@ Cohesion: 0.07
 Nodes (31): { can }, clearImage(), deleteBusy, deleteId, deleteOpen, editingId, emptyForm(), footerInput (+23 more)
 
 ### Community 4 - "Legacy MySQL Migration"
+Cohesion: 0.11
+Nodes (19): disposisiStatusEnum, statusAktifEnum, klasifikasiSurat, lampiranJenisEnum, notifikasi, notifikasiTipeEnum, kertasEnum, suratKeluarRelations (+11 more)
+
+### Community 5 - "Settings & Branding APIs"
 Cohesion: 0.13
 Nodes (26): isDeleted(), parseInserts(), parseTuple(), readValueTuples(), toDate(), toDateOnly(), args, basenameFromLegacyPath() (+18 more)
 
-### Community 5 - "Settings & Branding APIs"
+### Community 6 - "Surat Keluar Detail UI"
 Cohesion: 0.16
 Nodes (17): schema, schema, schema, generalSchema, integrasiSchema, appSettings, DEFAULT_SETTINGS, nomorCounter (+9 more)
 
-### Community 6 - "Surat Keluar Detail UI"
+### Community 7 - "MinIO File Storage"
 Cohesion: 0.08
 Nodes (19): actionBusy, actionError, busy, { can, user }, canApprove, canEdit, canKirim, canSubmit (+11 more)
 
-### Community 7 - "MinIO File Storage"
+### Community 8 - "Package Scripts & Tooling"
 Cohesion: 0.20
 Nodes (19): ALLOWED, schema, ensureBucket(), useMinio(), buildObjectPath(), candidateLocalPaths(), ensureMinioBucket(), findLocalFile() (+11 more)
 
-### Community 8 - "Package Scripts & Tooling"
+### Community 9 - "Nomor Surat Counters UI"
 Cohesion: 0.09
 Nodes (21): drizzle-kit, devDependencies, drizzle-kit, name, private, scripts, build, db:backfill-notif (+13 more)
 
-### Community 9 - "Nomor Surat Counters UI"
+### Community 10 - "Drizzle Domain Schema"
 Cohesion: 0.10
 Nodes (16): addForm, bulan, bulanOptions, { can }, contohLive, counters, editBusy, editValues (+8 more)
-
-### Community 10 - "Drizzle Domain Schema"
-Cohesion: 0.13
-Nodes (14): statusAktifEnum, klasifikasiSurat, lampiranJenisEnum, kertasEnum, suratKeluarRelations, suratKeluarStatusEnum, suratMasukRelations, suratMasukStatusEnum (+6 more)
 
 ### Community 11 - "Laporan Rekap Page"
 Cohesion: 0.12
@@ -212,7 +213,7 @@ Nodes (8): { can }, meta, page, q, route, rows, status, statusFilters
 
 ### Community 22 - "Core Runtime Dependencies"
 Cohesion: 0.22
-Nodes (9): bcryptjs, chart.js, minio, dependencies, bcryptjs, chart.js, minio, @tiptap/extension-placeholder (+1 more)
+Nodes (9): chart.js, minio, dependencies, chart.js, minio, @tiptap/extension-placeholder, vue, vue (+1 more)
 
 ### Community 23 - "Instansi Master UI"
 Cohesion: 0.25
@@ -271,14 +272,18 @@ Cohesion: 0.90
 Nodes (3): humanizeError(), looksLikeTechnicalError(), throwHumanError()
 
 ### Community 37 - "Confirm Dialog UI"
+Cohesion: 0.70
+Nodes (4): autoCreateUnitFromSso(), deriveUnitCode(), resolveSsoUser(), setMailogSession()
+
+### Community 38 - "Letter Preview UI"
 Cohesion: 0.67
 Nodes (3): emit, onKey(), props
 
-### Community 38 - "Letter Preview UI"
+### Community 39 - "Search Pill Input"
 Cohesion: 0.50
 Nodes (3): padStyle, paperClass, props
 
-### Community 39 - "Search Pill Input"
+### Community 40 - "Button Component"
 Cohesion: 0.50
 Nodes (3): emit, props, value
 
@@ -290,16 +295,16 @@ Nodes (3): emit, props, value
 ## Suggested Questions
 _Questions this graph is uniquely positioned to answer:_
 
-- **Why does `dependencies` connect `Core Runtime Dependencies` to `Package Scripts & Tooling`, `clsx Utility Dep`, `date-fns Dependency`, `drizzle-orm Dependency`, `h3 Server Dependency`, `Lucide Vue Icons`, `Nuxt SSO Client`, `Nuxt Framework`, `Nuxt Auth Utils`, `Nuxt Fonts Module`, `Tailwind Nuxt Module`, `Pinia Store Library`, `Pinia Nuxt Module`, `Postgres Driver`, `tailwind-merge Utility`, `TanStack Vue Table`, `Tiptap Text Align`, `Tiptap Underline`, `Tiptap ProseMirror`, `Tiptap Starter Kit`, `Tiptap Vue 3`, `vee-validate Forms`, `vee-validate Zod`, `Vue Runtime`, `vue-chartjs Charts`, `Vue Router`, `vue-sonner Toasts`, `Zod Validation`?**
+- **Why does `dependencies` connect `Core Runtime Dependencies` to `Nomor Surat Counters UI`, `date-fns Dependency`, `drizzle-orm Dependency`, `h3 Server Dependency`, `Lucide Vue Icons`, `Nuxt SSO Client`, `Nuxt Framework`, `Nuxt Auth Utils`, `Nuxt Fonts Module`, `Tailwind Nuxt Module`, `Pinia Store Library`, `Pinia Nuxt Module`, `Postgres Driver`, `tailwind-merge Utility`, `TanStack Vue Table`, `Tiptap Text Align`, `Tiptap Underline`, `Tiptap ProseMirror`, `Tiptap Starter Kit`, `Tiptap Vue 3`, `vee-validate Forms`, `vee-validate Zod`, `Vue Runtime`, `vue-chartjs Charts`, `Vue Router`, `vue-sonner Toasts`, `Zod Validation`, `Disposisi Notif Backfill`?**
   _High betweenness centrality (0.012) - this node is a cross-community bridge._
-- **Why does `useDb()` connect `API Auth & CRUD Routes` to `Settings & Branding APIs`?**
-  _High betweenness centrality (0.011) - this node is a cross-community bridge._
-- **Why does `requireAuthUser()` connect `API Auth & CRUD Routes` to `Database Backup API`, `Settings & Branding APIs`, `MinIO File Storage`?**
+- **Why does `useDb()` connect `API Auth & CRUD Routes` to `Surat Keluar Detail UI`?**
+  _High betweenness centrality (0.008) - this node is a cross-community bridge._
+- **Why does `requireAuthUser()` connect `API Auth & CRUD Routes` to `Package Scripts & Tooling`, `Database Backup API`, `Surat Keluar Detail UI`?**
   _High betweenness centrality (0.007) - this node is a cross-community bridge._
 - **What connects `{ user, logout }`, `route`, `{ can, isSuperAdmin }` to the rest of the system?**
   _335 weakly-connected nodes found - possible documentation gaps or missing edges._
 - **Should `API Auth & CRUD Routes` be split into smaller, more focused modules?**
-  _Cohesion score 0.07605388961321165 - nodes in this community are weakly interconnected._
+  _Cohesion score 0.0856991712220067 - nodes in this community are weakly interconnected._
 - **Should `Design System & Infra Docs` be split into smaller, more focused modules?**
   _Cohesion score 0.053877551020408164 - nodes in this community are weakly interconnected._
 - **Should `Surat Masuk Detail UI` be split into smaller, more focused modules?**

@@ -22,7 +22,7 @@ export default defineNuxtRouteMiddleware(async (to) => {
     if (now - _lastSsoCheck > SSO_CHECK_INTERVAL) {
       _lastSsoCheck = now
       try {
-        const result = await $fetch('/api/auth/check-sso-session', { credentials: 'include' })
+        const result = await $fetch('/api/auth/sso/check-session', { credentials: 'include' })
         if (!result?.valid) {
           await clear()
           return navigateTo('/login?reason=session_expired')

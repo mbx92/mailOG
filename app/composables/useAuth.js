@@ -1,6 +1,6 @@
 export function useAuth() {
   const { loggedIn, user, clear, fetch: fetchSession } = useUserSession()
-  const runtimeConfig = useRuntimeConfig()
+  const { enabled: ssoEnabled, logoutFromSso } = useSso()
 
   const login = async (email, password) => {
     await $fetch('/api/auth/login', {
@@ -15,15 +15,12 @@ export function useAuth() {
     await $fetch('/api/auth/logout', { method: 'POST' })
     await clear()
 
-    if (isSso) {
-      // Gunakan runtimeConfig untuk base URL SSO
-      const ssoBase = runtimeConfig.public?.ssoIssuer
-      if (ssoBase) {
-        window.location.replace(`${ssoBase}/apps`)
-      } else {
-        // Fallback: redirect ke halaman login
-        await navigateTo('/login')
-      }
+    // logoutFromSso() clears the SSO session on the issuer too — just
+    // navigating to the issuer's app launcher (previous behavior) left that
+    // session alive, so the next SSO login silently skipped the password
+    // prompt instead of actually logging back in.
+    if (isSso && ssoEnabled.value) {
+      logoutFromSso()
     } else {
       await navigateTo('/login')
     }

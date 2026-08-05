@@ -1,0 +1,43 @@
+# Build outputs
+.output
+.nuxt
+.nitro
+.data
+.cache
+dist
+
+# Deps
+node_modules
+
+# Dev / IDE
+.git
+.gitignore
+.gitattributes
+.idea
+.fleet
+.vscode
+.DS_Store
+
+# Env (secret)
+.env
+.env.*
+!.env.example
+
+# Logs
+*.log
+logs/
+
+# Uploads (pakai volume di production)
+uploads/
+
+# Test & docs
+*.md
+!README.md
+tests/
+coverage/
+
+# Misc
+docker-compose.yml
+docker-compose.*.yml
+Dockerfile
+.dockerignore

@@ -13,7 +13,7 @@ export const DEFAULT_SETTINGS = {
   timezone: 'Asia/Makassar',
   storage_driver: 'local',
   upload_dir: 'uploads/surat',
-  minio_endpoint: 'localhost',
+  minio_endpoint: '',
   minio_port: '9000',
   minio_use_ssl: 'false',
   minio_access_key: '',

@@ -1,39 +1,82 @@
-services:
-  postgres:
-    image: postgres:16-alpine
-    container_name: mailog-postgres
-    environment:
-      POSTGRES_USER: mailog
-      POSTGRES_PASSWORD: mailog
-      POSTGRES_DB: mailog
-    ports:
-      - '5433:5432'
-    volumes:
-      - mailog_pg_data:/var/lib/postgresql/data
-    healthcheck:
-      test: ['CMD-SHELL', 'pg_isready -U mailog']
-      interval: 5s
-      timeout: 5s
-      retries: 5
+# ============================================================
+# mailOG — production compose untuk Coolify / deployment
+# ============================================================
+# PostgreSQL & MinIO adalah external services (tidak include disini).
+# Pastikan env vars di .env sudah menunjuk ke service yg benar.
+#
+# Build local:
+#   docker compose build
+#   docker compose up -d
+#
+# Build dengan konteks parent (butuh sso-login/ sebagai sibling):
+#   docker build -f Dockerfile -t mailog ..
+# ============================================================
 
-  minio:
-    image: minio/minio:latest
-    container_name: mailog-minio
-    command: server /data --console-address ":9001"
-    environment:
-      MINIO_ROOT_USER: mailog-admin
-      MINIO_ROOT_PASSWORD: mailog-secret
+services:
+  mailog:
+    # ---- Pakai image dari registry (recommended untuk Coolify) ----
+    # Ganti dengan registry & tag sesuai environment:
+    image: ${DOCKER_IMAGE:-mailog:latest}
+
+    # ---- Build local (butuh sso-login/ sebagai sibling directory) ----
+    # build:
+    #   context: ..
+    #   dockerfile: mailog/Dockerfile
+
+    container_name: mailog
+    restart: unless-stopped
     ports:
-      - '9000:9000'
-      - '9001:9001'
+      - '${APP_PORT:-3000}:3000'
+
+    environment:
+      # === Direct process.env (dibaca oleh server code & SSO module) ===
+      DATABASE_URL: ${DATABASE_URL}
+      NODE_ENV: production
+      NUXT_SESSION_PASSWORD: ${NUXT_SESSION_PASSWORD}
+      SESSION_SECRET: ${SESSION_SECRET}
+
+      # SSO (dibaca oleh @mbx92/nuxt-sso-client via process.env)
+      SSO_ISSUER: ${SSO_ISSUER:-}
+      SSO_CLIENT_ID: ${SSO_CLIENT_ID:-}
+      SSO_CLIENT_SECRET: ${SSO_CLIENT_SECRET:-}
+      SSO_REDIRECT_URI: ${SSO_REDIRECT_URI:-}
+      SSO_AUTO_PROVISION: ${SSO_AUTO_PROVISION:-true}
+
+      # === Nuxt RuntimeConfig overrides (NUXT_ prefix) ===
+      NUXT_DATABASE_URL: ${DATABASE_URL}
+      NUXT_SESSION_SECRET: ${SESSION_SECRET}
+
+      # storage
+      NUXT_STORAGE_DRIVER: ${STORAGE_DRIVER:-minio}
+      NUXT_STORAGE_UPLOAD_DIR: ${UPLOAD_DIR:-uploads/surat}
+
+      # minio (nested runtimeConfig)
+      NUXT_MINIO_ENDPOINT: ${MINIO_ENDPOINT}
+      NUXT_MINIO_PORT: ${MINIO_PORT:-9000}
+      NUXT_MINIO_USE_SSL: ${MINIO_USE_SSL:-false}
+      NUXT_MINIO_ACCESS_KEY: ${MINIO_ACCESS_KEY}
+      NUXT_MINIO_SECRET_KEY: ${MINIO_SECRET_KEY}
+      NUXT_MINIO_BUCKET: ${MINIO_BUCKET:-mailog}
+
+      # public
+      NUXT_PUBLIC_APP_URL: ${APP_URL}
+      NUXT_PUBLIC_SSO_ISSUER: ${SSO_ISSUER:-}
+
     volumes:
-      - mailog_minio_data:/data
+      # Persist uploads (jika STORAGE_DRIVER=local fallback)
+      - mailog_uploads:/app/uploads
+
     healthcheck:
-      test: ['CMD', 'mc', 'ready', 'local']
-      interval: 5s
-      timeout: 5s
-      retries: 5
+      test: ['CMD-SHELL', 'wget -qO- http://localhost:3000/api/health || exit 1']
+      interval: 30s
+      timeout: 10s
+      retries: 3
+      start_period: 25s
+
+    labels:
+      - 'coolify.managed=true'
+      - 'coolify.app=mailog'
 
 volumes:
-  mailog_pg_data:
-  mailog_minio_data:
+  mailog_uploads:
+    name: mailog_uploads

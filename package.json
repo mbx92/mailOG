@@ -15,8 +15,10 @@
     "db:seed": "node --env-file=.env scripts/seed.js",
     "db:migrate-legacy": "node --env-file=.env scripts/migrate-legacy.js",
     "db:backfill-notif": "node --env-file=.env scripts/backfill-disposisi-notifications.js",
+    "docker:build": "docker build -f Dockerfile -t mailog:latest ..",
     "docker:up": "docker compose up -d",
-    "docker:down": "docker compose down"
+    "docker:down": "docker compose down",
+    "docker:logs": "docker compose logs -f"
   },
   "dependencies": {
     "@lucide/vue": "^1.27.0",

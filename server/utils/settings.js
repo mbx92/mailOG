@@ -20,7 +20,7 @@ export async function getSettingsMap() {
   const config = useRuntimeConfig()
   if (!map.storage_driver) map.storage_driver = config.storage?.driver || 'local'
   if (!map.upload_dir) map.upload_dir = config.storage?.uploadDir || 'uploads/surat'
-  if (!map.minio_endpoint) map.minio_endpoint = config.minio?.endpoint || 'localhost'
+  if (!map.minio_endpoint) map.minio_endpoint = config.minio?.endpoint || ''
   if (!map.minio_port) map.minio_port = String(config.minio?.port || 9000)
   if (!map.minio_access_key && config.minio?.accessKey) map.minio_access_key = config.minio.accessKey
   if (!map.minio_secret_key && config.minio?.secretKey) map.minio_secret_key = config.minio.secretKey

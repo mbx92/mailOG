@@ -35,6 +35,7 @@ const editor = useEditor({
   extensions: [
     StarterKit.configure({
       heading: { levels: [2, 3] },
+      underline: false,
     }),
     Underline,
     TextAlign.configure({ types: ['heading', 'paragraph'] }),

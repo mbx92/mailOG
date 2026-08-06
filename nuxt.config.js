@@ -75,5 +75,7 @@ export default defineNuxtConfig({
   nitro: {
     // multipart lampiran (PDF dll.)
     maxRequestBodySize: 25 * 1024 * 1024,
+    // Ensure SSO resolve-user runs with full env from .env
+    envPrefix: '',
   },
 })

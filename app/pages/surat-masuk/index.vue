@@ -83,6 +83,9 @@ watch([q, status], () => {
           <thead class="bg-surface">
             <tr>
               <th class="px-4 py-3 text-caption-bold text-steel">
+                Tanggal
+              </th>
+              <th class="px-4 py-3 text-caption-bold text-steel">
                 No
               </th>
               <th class="px-4 py-3 text-caption-bold text-steel">
@@ -104,12 +107,12 @@ watch([q, status], () => {
           </thead>
           <tbody>
             <tr v-if="pending">
-              <td colspan="6" class="px-4 py-10 text-center text-body-sm text-steel">
+              <td colspan="7" class="px-4 py-10 text-center text-body-sm text-steel">
                 Memuat...
               </td>
             </tr>
             <tr v-else-if="!rows.length">
-              <td colspan="6" class="px-4 py-10 text-center text-body-sm text-steel">
+              <td colspan="7" class="px-4 py-10 text-center text-body-sm text-steel">
                 Tidak ada data
               </td>
             </tr>
@@ -119,6 +122,9 @@ watch([q, status], () => {
               class="border-t border-hairline-soft hover:bg-surface/60 cursor-pointer"
               @click="navigateTo(`/surat-masuk/${row.id}`)"
             >
+              <td class="px-4 py-3 text-body-sm text-steel whitespace-nowrap">
+                {{ formatDate(row.tanggalSurat) }}
+              </td>
               <td class="px-4 py-3 text-body-sm font-medium text-ink">
                 {{ row.nomorSurat }}
               </td>

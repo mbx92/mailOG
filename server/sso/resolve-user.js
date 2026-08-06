@@ -204,6 +204,7 @@ export default async function resolveSsoUser(event, { userInfo, tokens, sso }) {
     return { redirectTo: '/' }
   }
   catch (error) {
+    console.error('[sso] resolve error:', error?.message || error, error?.stack?.split('\n').slice(0, 3).join(' | '))
     if (error?.statusCode && error?.statusMessage && error.statusCode < 500) {
       throw error
     }

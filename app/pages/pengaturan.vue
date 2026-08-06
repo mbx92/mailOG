@@ -137,6 +137,50 @@ async function createBackup() {
   }
 }
 
+// --- MinIO tools ---
+const minioStatus = ref(null) // { online: bool, error?: string, ... }
+const minioTesting = ref(false)
+const minioSyncing = ref(false)
+const syncResult = ref(null) // { synced, skipped, errors }
+
+async function testMinio() {
+  minioTesting.value = true
+  minioStatus.value = null
+  try {
+    const res = await $fetch('/api/pengaturan/minio-test')
+    minioStatus.value = res.data
+    if (res.data.online) {
+      toast.success(`MinIO online · bucket "${res.data.bucket}" ${res.data.bucketExists ? 'OK' : 'tidak ditemukan'}`)
+    }
+    else {
+      toast.error(`MinIO offline: ${res.data.error || 'unknown'}`)
+    }
+  }
+  catch (e) {
+    minioStatus.value = { online: false, error: e?.message || 'Gagal test' }
+    toast.error(e?.data?.statusMessage || 'Test MinIO gagal')
+  }
+  finally {
+    minioTesting.value = false
+  }
+}
+
+async function syncToMinio() {
+  minioSyncing.value = true
+  syncResult.value = null
+  try {
+    const res = await $fetch('/api/pengaturan/minio-sync', { method: 'POST' })
+    syncResult.value = res.data
+    toast.success(`Sync selesai · ${res.data.synced} berhasil, ${res.data.skipped} skip, ${res.data.errors} error`)
+  }
+  catch (e) {
+    toast.error(e?.data?.statusMessage || 'Sync gagal')
+  }
+  finally {
+    minioSyncing.value = false
+  }
+}
+
 const timezones = [
   'Asia/Jakarta',
   'Asia/Makassar',
@@ -325,6 +369,62 @@ const timezones = [
         <UiButton :disabled="saving" @click="saveIntegrasi">
           {{ saving ? 'Menyimpan...' : 'Simpan' }}
         </UiButton>
+      </div>
+
+      <!-- MinIO status & tools (hanya muncul jika driver = minio) -->
+      <div v-if="integrasiForm.storageDriver === 'minio'" class="border-t border-hairline-soft pt-4 space-y-3">
+        <div class="flex flex-wrap items-center gap-3">
+          <UiButton
+            variant="secondary"
+            :disabled="minioTesting"
+            @click="testMinio"
+          >
+            {{ minioTesting ? 'Testing...' : 'Test koneksi MinIO' }}
+          </UiButton>
+          <span
+            v-if="minioStatus"
+            class="inline-flex items-center gap-1.5 text-body-sm"
+          >
+            <span
+              class="w-2 h-2 rounded-full"
+              :class="minioStatus.online ? 'bg-success-text' : 'bg-error'"
+            />
+            <span :class="minioStatus.online ? 'text-success-text font-medium' : 'text-error'">
+              {{ minioStatus.online ? 'Online' : 'Offline' }}
+            </span>
+          </span>
+        </div>
+        <div v-if="minioStatus && minioStatus.online" class="text-caption text-muted">
+          Bucket: {{ minioStatus.bucket }} ·
+          {{ minioStatus.bucketExists ? 'ditemukan' : 'tidak ditemukan' }}
+          <template v-if="minioStatus.bucketCount">
+            · {{ minioStatus.bucketCount }} bucket tersedia ({{ minioStatus.buckets?.join(', ') }})
+          </template>
+        </div>
+        <div v-else-if="minioStatus && !minioStatus.online" class="text-caption text-error">
+          {{ minioStatus.error }}
+        </div>
+
+        <hr class="border-hairline-soft">
+
+        <div>
+          <p class="text-body-sm text-steel mb-2">
+            Pindahkan file lampiran yang ada di folder <code class="text-caption">uploads/surat/</code> ke MinIO.
+            File yang sudah ada di MinIO akan dilewati.
+          </p>
+          <div class="flex flex-wrap items-center gap-3">
+            <UiButton
+              variant="tertiary"
+              :disabled="minioSyncing"
+              @click="syncToMinio"
+            >
+              {{ minioSyncing ? 'Menyinkronkan...' : 'Sync local → MinIO' }}
+            </UiButton>
+            <span v-if="syncResult" class="text-body-sm text-steel">
+              {{ syncResult.synced }} berhasil, {{ syncResult.skipped }} skip, {{ syncResult.errors }} error
+            </span>
+          </div>
+        </div>
       </div>
     </section>
 

@@ -15,14 +15,14 @@
     "db:seed": "node --env-file=.env scripts/seed.js",
     "db:migrate-legacy": "node --env-file=.env scripts/migrate-legacy.js",
     "db:backfill-notif": "node --env-file=.env scripts/backfill-disposisi-notifications.js",
-    "docker:build": "docker build -f Dockerfile -t mailog:latest ..",
+    "docker:build": "docker build -f Dockerfile -t mailog:latest .",
     "docker:up": "docker compose up -d",
     "docker:down": "docker compose down",
     "docker:logs": "docker compose logs -f"
   },
   "dependencies": {
     "@lucide/vue": "^1.27.0",
-    "@mbx92/nuxt-sso-client": "file:../sso-login/packages/nuxt-sso-client",
+    "@mbx92/nuxt-sso-client": "file:packages/mbx92-nuxt-sso-client-0.2.0.tgz",
     "@nuxt/fonts": "^0.14.0",
     "@nuxtjs/tailwindcss": "^6.14.0",
     "@pinia/nuxt": "^1.0.1",

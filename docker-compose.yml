@@ -18,10 +18,10 @@ services:
     # Ganti dengan registry & tag sesuai environment:
     image: ${DOCKER_IMAGE:-mailog:latest}
 
-    # ---- Build local (butuh sso-login/ sebagai sibling directory) ----
+    # ---- Build local (tarball sso-client sudah di packages/) ----
     # build:
-    #   context: ..
-    #   dockerfile: mailog/Dockerfile
+    #   context: .
+    #   dockerfile: Dockerfile
 
     container_name: mailog
     restart: unless-stopped

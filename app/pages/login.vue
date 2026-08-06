@@ -4,6 +4,8 @@ definePageMeta({ layout: 'auth' })
 const route = useRoute()
 const { login } = useAuth()
 const { enabled: ssoEnabled, loginPath: ssoLoginPath } = useSso()
+const email = ref('')
+const password = ref('')
 const error = ref(humanizeLoginError(route.query.error))
 const loading = ref(false)
 const sessionExpired = computed(() => route.query.reason === 'session_expired')
@@ -18,6 +20,21 @@ function humanizeLoginError(raw) {
     return 'Login gagal. Silakan coba lagi atau hubungi administrator.'
   }
   return text
+}
+
+async function onSubmit() {
+  error.value = ''
+  loading.value = true
+  try {
+    await login(email.value, password.value)
+    await navigateTo('/')
+  }
+  catch (e) {
+    error.value = humanizeLoginError(e?.data?.statusMessage || e?.statusMessage || 'Login gagal')
+  }
+  finally {
+    loading.value = false
+  }
 }
 </script>
 
@@ -35,25 +52,42 @@ function humanizeLoginError(raw) {
       </p>
     </div>
 
-    <div class="card-base space-y-5">
+    <form class="card-base space-y-5" @submit.prevent="onSubmit">
       <div v-if="sessionExpired" class="rounded-lg border border-amber-300 bg-amber-50 px-4 py-3 text-body-sm text-amber-700">
         <span class="font-semibold">Sesi habis.</span> Silakan masuk kembali.
       </div>
 
-      <p v-if="error" class="text-body-sm text-error text-center">
+      <div>
+        <label class="block text-caption-bold text-steel mb-1.5">Email</label>
+        <input v-model="email" type="email" required class="input-field" placeholder="nama@instansi.go.id">
+      </div>
+      <div>
+        <label class="block text-caption-bold text-steel mb-1.5">Password</label>
+        <input v-model="password" type="password" required class="input-field" placeholder="••••••••">
+      </div>
+
+      <p v-if="error" class="text-body-sm text-error">
         {{ error }}
       </p>
 
+      <UiButton type="submit" block :disabled="loading">
+        {{ loading ? 'Masuk...' : 'Masuk' }}
+      </UiButton>
+
       <template v-if="ssoEnabled">
-        <a :href="ssoLoginPath" class="btn-primary inline-flex w-full items-center justify-center">
+        <div class="relative py-1">
+          <div class="absolute inset-0 flex items-center">
+            <div class="w-full border-t border-hairline" />
+          </div>
+          <div class="relative flex justify-center">
+            <span class="bg-canvas px-3 text-caption text-muted">atau</span>
+          </div>
+        </div>
+
+        <a :href="ssoLoginPath" class="btn-secondary inline-flex w-full items-center justify-center">
           Masuk dengan SSO
         </a>
       </template>
-      <template v-else>
-        <div class="text-center text-body-sm text-steel py-4">
-          SSO tidak terkonfigurasi. Hubungi administrator.
-        </div>
-      </template>
-    </div>
+    </form>
   </div>
 </template>

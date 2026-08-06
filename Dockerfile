@@ -31,4 +31,4 @@ VOLUME /app/uploads
 EXPOSE 3000
 
 # Pastikan pnpm tidak menjadi blocker — Nuxt output sudah standalone
-CMD ["node", "server/index.mjs"]
+CMD ["node", "--max-old-space-size=2048", "server/index.mjs"]

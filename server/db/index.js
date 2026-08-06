@@ -54,7 +54,7 @@ function connect(url) {
   }
   if (_db) return _db
 
-  const client = postgres(url, { max: 10 })
+  const client = postgres(url, { max: 3, idle_timeout: 30, connect_timeout: 10 })
   _db = drizzle(client, { schema })
   _db._url = url
   return _db

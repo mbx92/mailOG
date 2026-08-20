@@ -26,7 +26,7 @@ services:
     container_name: mailog
     restart: unless-stopped
     ports:
-      - '${APP_PORT:-3000}:3000'
+      - '${APP_PORT:-3015}:3015'
 
     environment:
       # === Direct process.env (dibaca oleh server code & SSO module) ===
@@ -67,7 +67,7 @@ services:
       - mailog_uploads:/app/uploads
 
     healthcheck:
-      test: ['CMD-SHELL', 'wget -qO- http://127.0.0.1:3000/api/health || exit 1']
+      test: ['CMD-SHELL', 'wget -qO- http://127.0.0.1:3015/api/health || exit 1']
       interval: 30s
       timeout: 10s
       retries: 5

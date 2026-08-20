@@ -32,15 +32,15 @@ RUN mkdir -p /app/uploads
 VOLUME /app/uploads
 
 ENV NITRO_HOST=0.0.0.0
-ENV NITRO_PORT=3000
+ENV NITRO_PORT=3015
 ENV HOST=0.0.0.0
-ENV PORT=3000
+ENV PORT=3015
 
-EXPOSE 3000
+EXPOSE 3015
 
 # Coolify parse HEALTHCHECK dari Dockerfile (bukan dari docker-compose.yml)
 HEALTHCHECK --interval=30s --timeout=10s --start-period=40s --retries=5 \
-  CMD wget -qO- http://127.0.0.1:3000/api/health || exit 1
+  CMD wget -qO- http://127.0.0.1:3015/api/health || exit 1
 
 # Pastikan pnpm tidak menjadi blocker — Nuxt output sudah standalone
 CMD ["node", "--max-old-space-size=2048", "server/index.mjs"]

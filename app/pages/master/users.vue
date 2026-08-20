@@ -1,6 +1,14 @@
-<script setup >
+<script setup>
 import { toast } from 'vue-sonner'
 import { Plus } from '@lucide/vue'
+
+const LEVEL_OPTIONS = [
+  { value: 1, label: 'Super Admin' },
+  { value: 2, label: 'Direksi' },
+  { value: 3, label: 'Admin / Sekretaris' },
+  { value: 4, label: 'Staff Unit' },
+  { value: 5, label: 'Viewer' },
+]
 
 const { can } = useRBAC()
 if (!can('manage_user')) {
@@ -10,6 +18,8 @@ if (!can('manage_user')) {
 const q = ref('')
 const showForm = ref(false)
 const loading = ref(false)
+const editingId = ref(null)
+const editingProvider = ref('local')
 
 const form = reactive({
   nama: '',
@@ -18,6 +28,7 @@ const form = reactive({
   level: 4,
   unitId: '',
   jabatan: '',
+  isActive: true,
 })
 
 const [{ data, refresh, pending }, { data: unitData }] = await Promise.all([
@@ -28,19 +39,72 @@ const [{ data, refresh, pending }, { data: unitData }] = await Promise.all([
   useFetch('/api/unit'),
 ])
 
-async function createUser() {
+function resetForm() {
+  editingId.value = null
+  editingProvider.value = 'local'
+  Object.assign(form, {
+    nama: '',
+    email: '',
+    password: '',
+    level: 4,
+    unitId: '',
+    jabatan: '',
+    isActive: true,
+  })
+}
+
+function openCreate() {
+  resetForm()
+  showForm.value = true
+}
+
+function openEdit(row) {
+  editingId.value = row.id
+  editingProvider.value = row.provider || 'local'
+  Object.assign(form, {
+    nama: row.nama || '',
+    email: row.email || '',
+    password: '',
+    level: row.level,
+    unitId: row.unitId || '',
+    jabatan: row.jabatan || '',
+    isActive: row.isActive !== false,
+  })
+  showForm.value = true
+}
+
+async function saveUser() {
   loading.value = true
   try {
-    await $fetch('/api/users', {
-      method: 'POST',
-      body: {
-        ...form,
-        unitId: form.unitId || null,
-      },
-    })
-    toast.success('User ditambahkan')
+    if (editingId.value) {
+      await $fetch(`/api/users/${editingId.value}`, {
+        method: 'PUT',
+        body: {
+          nama: form.nama,
+          level: form.level,
+          unitId: form.unitId || null,
+          jabatan: form.jabatan || null,
+          isActive: form.isActive,
+        },
+      })
+      toast.success('User diperbarui')
+    }
+    else {
+      await $fetch('/api/users', {
+        method: 'POST',
+        body: {
+          nama: form.nama,
+          email: form.email,
+          password: form.password,
+          level: form.level,
+          unitId: form.unitId || null,
+          jabatan: form.jabatan || null,
+        },
+      })
+      toast.success('User ditambahkan')
+    }
     showForm.value = false
-    Object.assign(form, { nama: '', email: '', password: '', level: 4, unitId: '', jabatan: '' })
+    resetForm()
     await refresh()
   }
   catch (e) {
@@ -63,7 +127,7 @@ async function createUser() {
           Manajemen pengguna & level akses
         </p>
       </div>
-      <UiButton @click="showForm = true">
+      <UiButton @click="openCreate">
         <Plus class="w-4 h-4" />
         Tambah User
       </UiButton>
@@ -95,11 +159,14 @@ async function createUser() {
             <th class="px-4 py-3 text-caption-bold text-steel">
               Status
             </th>
+            <th class="px-4 py-3 text-caption-bold text-steel">
+              Aksi
+            </th>
           </tr>
         </thead>
         <tbody>
           <tr v-if="pending">
-            <td colspan="6" class="px-4 py-8 text-center text-body-sm text-steel">
+            <td colspan="7" class="px-4 py-8 text-center text-body-sm text-steel">
               Memuat...
             </td>
           </tr>
@@ -130,42 +197,52 @@ async function createUser() {
                 {{ row.isActive ? 'Aktif' : 'Nonaktif' }}
               </span>
             </td>
+            <td class="px-4 py-3">
+              <button
+                type="button"
+                class="text-body-sm text-ink font-medium"
+                @click="openEdit(row)"
+              >
+                Edit
+              </button>
+            </td>
           </tr>
         </tbody>
       </table>
     </div>
 
-    <UiSlidePanel :open="showForm" title="Tambah User" @close="showForm = false">
-      <form class="space-y-4" @submit.prevent="createUser">
+    <UiSlidePanel
+      :open="showForm"
+      :title="editingId ? 'Edit User' : 'Tambah User'"
+      @close="showForm = false"
+    >
+      <form class="space-y-4" @submit.prevent="saveUser">
         <div>
           <label class="block text-caption-bold text-steel mb-1.5">Nama</label>
           <input v-model="form.nama" required class="input-field">
         </div>
         <div>
           <label class="block text-caption-bold text-steel mb-1.5">Email</label>
-          <input v-model="form.email" type="email" required class="input-field">
+          <input
+            v-model="form.email"
+            type="email"
+            required
+            class="input-field"
+            :disabled="!!editingId"
+          >
+          <p v-if="editingId" class="text-caption text-muted mt-1.5">
+            Email tidak dapat diubah
+          </p>
         </div>
-        <div>
+        <div v-if="!editingId">
           <label class="block text-caption-bold text-steel mb-1.5">Password</label>
           <input v-model="form.password" type="password" required minlength="8" class="input-field">
         </div>
         <div>
-          <label class="block text-caption-bold text-steel mb-1.5">Level</label>
+          <label class="block text-caption-bold text-steel mb-1.5">Role / Level</label>
           <select v-model.number="form.level" class="input-field">
-            <option :value="1">
-              Super Admin
-            </option>
-            <option :value="2">
-              Direksi
-            </option>
-            <option :value="3">
-              Admin / Sekretaris
-            </option>
-            <option :value="4">
-              Staff Unit
-            </option>
-            <option :value="5">
-              Viewer
+            <option v-for="opt in LEVEL_OPTIONS" :key="opt.value" :value="opt.value">
+              {{ opt.label }}
             </option>
           </select>
         </div>
@@ -184,13 +261,25 @@ async function createUser() {
           <label class="block text-caption-bold text-steel mb-1.5">Jabatan</label>
           <input v-model="form.jabatan" class="input-field">
         </div>
+        <div v-if="editingId" class="flex items-center gap-2">
+          <input
+            id="user-active"
+            v-model="form.isActive"
+            type="checkbox"
+            class="rounded border-hairline"
+          >
+          <label for="user-active" class="text-body-sm text-ink">Aktif</label>
+        </div>
+        <p v-if="editingId && editingProvider === 'sso'" class="text-caption text-muted">
+          User SSO — password dikelola di portal SSO
+        </p>
       </form>
       <template #footer>
         <UiButton variant="tertiary" @click="showForm = false">
           Batal
         </UiButton>
-        <UiButton :disabled="loading" @click="createUser">
-          Simpan
+        <UiButton :disabled="loading" @click="saveUser">
+          {{ loading ? 'Menyimpan...' : 'Simpan' }}
         </UiButton>
       </template>
     </UiSlidePanel>

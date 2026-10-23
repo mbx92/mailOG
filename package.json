@@ -61,5 +61,8 @@
       "esbuild"
     ]
   },
-  "packageManager": "pnpm@10.27.0"
+  "packageManager": "pnpm@10.27.0",
+  "engines": {
+    "node": ">=22.23.4"
+  }
 }
